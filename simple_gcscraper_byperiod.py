@@ -2,7 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import time
-import os
 
 EXCLUDED_WORDS = ["Session", "Sustaining of", "Church Auditing"]
 UNKNOWN_TITLE = "Unknown Title"
