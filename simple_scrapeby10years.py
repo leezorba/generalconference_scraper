@@ -17,6 +17,53 @@ def get_cleaned_body_content(body_div):
 
 def fetch_conference_talk(url):
     try:
+        response = requests.get(url)
+        if response.status_code != 200:
+            print(f"Error: Unable to fetch the webpage {url}. Status code: {response.status_code}")
+            return None
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        title_tag = soup.find('h1', id="title1")
+        title = title_tag.get_text(strip=True) if title_tag else UNKNOWN_TITLE
+
+        if title == UNKNOWN_TITLE or any(word in title for word in EXCLUDED_WORDS):
+            print(f"Skipping talk: {title} (Excluded or Unknown Title)")
+            return None
+
+        period_tag = soup.find('div', class_='itemTitle-MXhtV')
+        period = period_tag.get_text(strip=True) if period_tag else "Unknown Period"
+
+        speaker_tag = soup.find('p', class_='author-name')
+        speaker = speaker_tag.get_text(strip=True) if speaker_tag else "Unknown Speaker"
+        if speaker.startswith("By "):
+            speaker = speaker[3:]
+
+        # Skip if the speaker is "Unknown Speaker"
+        if speaker == "Unknown Speaker":
+            print(f"Skipping talk with Unknown Speaker")
+            return None
+
+        author_role_tag = soup.find('p', class_='author-role')
+        author_role = author_role_tag.get_text(strip=True) if author_role_tag else "Unknown Role"
+
+        body_div = soup.find('div', class_='body-block')
+        body_content = get_cleaned_body_content(body_div) if body_div else ""
+
+        talk_data = {
+            "title": title,
+            "period": period,
+            "speaker": speaker,
+            "author_role": author_role,
+            "body": body_content
+        }
+
+        return talk_data
+
+    except Exception as e:
+        print(f"Error processing {url}: {str(e)}")
+        return None
+    try:
         print(f"Fetching details for talk URL: {url}")
         response = requests.get(url)
         if response.status_code != 200:

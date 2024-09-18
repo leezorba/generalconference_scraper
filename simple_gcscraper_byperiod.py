@@ -41,6 +41,11 @@ def fetch_conference_talk(url):
         if speaker.startswith("By "):
             speaker = speaker[3:]
 
+        # Skip if the speaker is "Unknown Speaker"
+        if speaker == "Unknown Speaker":
+            print(f"Skipping talk with Unknown Speaker")
+            return None
+
         author_role_tag = soup.find('p', class_='author-role')
         author_role = author_role_tag.get_text(strip=True) if author_role_tag else "Unknown Role"
 

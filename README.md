@@ -21,5 +21,3 @@ If you don't want the jsonl conversion (using llm) but just want the text, use t
 These codes will only output json and txt files. 
 
 This scraper skips "specialty" talks such as church auditing report and sustaining church leaders.
-
-Will upload a Notebook example of finetuning an llm model 
